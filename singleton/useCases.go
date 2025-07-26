@@ -45,7 +45,7 @@ func GetDBPool() *DBPool {
 			panic(err)
 		}
 		dbInstance = &DBPool{
-			db: db,
+			Db: db,
 		}
 	})
 	return dbInstance
@@ -64,7 +64,7 @@ type Logger struct {
 
 func GetLogger() *Logger {
 	logOnce.Do(func() {
-		logInstance = &Logger{log: slog.New(slog.NewJSONHandler(os.Stdout, nil))}
+		logInstance = &Logger{Log: slog.New(slog.NewJSONHandler(os.Stdout, nil))}
 	})
 	return logInstance
 }
