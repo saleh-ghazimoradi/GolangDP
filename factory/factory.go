@@ -2,76 +2,71 @@ package factory
 
 import "fmt"
 
-type PizzaProduct interface {
-	SetName(name string)
-	SetPrice(price float64)
-	GetName() string
-	GetPrice() float64
+type Pizza interface {
+	Name() string
+	Price() float64
+	Ingredients() []string
 }
 
-type ConcretePizzaProduct struct {
-	name  string
-	price float64
+type BasePizza struct {
+	name        string
+	price       float64
+	ingredients []string
 }
 
-func (p *ConcretePizzaProduct) SetName(name string) {
-	p.name = name
+func (b *BasePizza) Name() string {
+	return b.name
 }
 
-func (p *ConcretePizzaProduct) SetPrice(price float64) {
-	p.price = price
+func (b *BasePizza) Price() float64 {
+	return b.price
 }
 
-func (p *ConcretePizzaProduct) GetName() string {
-	return p.name
+func (b *BasePizza) Ingredients() []string {
+	return b.ingredients
 }
 
-func (p *ConcretePizzaProduct) GetPrice() float64 {
-	return p.price
+type IranianPizza struct {
+	BasePizza
 }
 
-type ItalianPizzaProduct struct {
-	ConcretePizzaProduct
+func NewIranianPizza(name string, price float64) Pizza {
+	return &IranianPizza{BasePizza{name, price, []string{"Garlic", "Steak", "Mushroom"}}}
 }
 
-func NewItalianPizzaProduct(name string, price float64) PizzaProduct {
-	return &ConcretePizzaProduct{
-		name:  name,
-		price: price,
+type ItalianPizza struct {
+	BasePizza
+}
+
+func NewItalianPizza(name string, price float64) Pizza {
+	return &ItalianPizza{BasePizza{name, price, []string{"Tomato Sauce", "Mozzarella", "Basil"}}}
+}
+
+type AmericaPizza struct {
+	BasePizza
+}
+
+func NewAmericaPizza(name string, price float64) Pizza {
+	return &AmericaPizza{
+		BasePizza{name, price, []string{"Pepperoni", "Cheddar", "BBQ Sauce"}},
 	}
 }
 
-type AmericanPizzaProduct struct {
-	ConcretePizzaProduct
+type PizzaConfig struct {
+	Type  string
+	Name  string
+	Price float64
 }
 
-func NewAmericanPizzaProduct(name string, price float64) PizzaProduct {
-	return &ConcretePizzaProduct{
-		name:  name,
-		price: price,
-	}
-}
-
-type IranianPizzaProduct struct {
-	ConcretePizzaProduct
-}
-
-func NewIranianPizzaProduct(name string, price float64) PizzaProduct {
-	return &ConcretePizzaProduct{
-		name:  name,
-		price: price,
-	}
-}
-
-func GetPizzaProduct(pizzaType string) (PizzaProduct, error) {
-	switch pizzaType {
+func NewPizza(cfg PizzaConfig) (Pizza, error) {
+	switch cfg.Type {
 	case "Iranian":
-		return NewIranianPizzaProduct("Garlic & Steak", 15), nil
+		return NewIranianPizza(cfg.Name, cfg.Price), nil
+	case "America":
+		return NewAmericaPizza(cfg.Name, cfg.Price), nil
 	case "Italian":
-		return NewItalianPizzaProduct("Margherita", 12), nil
-	case "American":
-		return NewAmericanPizzaProduct("Cake Pizza", 10), nil
+		return NewItalianPizza(cfg.Name, cfg.Price), nil
 	default:
-		return nil, fmt.Errorf("pizza type %s is not supported", pizzaType)
+		return nil, fmt.Errorf("unknown type: %s", cfg.Type)
 	}
 }
