@@ -1,5 +1,6 @@
 package decorator
 
+// struct based decorator
 type Coffee interface {
 	GetCost() int
 	GetDescription() string
@@ -37,4 +38,25 @@ func (s *SugarDecorator) GetCost() int {
 
 func (s *SugarDecorator) GetDescription() string {
 	return s.Coffee.GetDescription() + ",sugar"
+}
+
+// functional based decorator peculiar to Golang
+type CoffeeFunc func() (cost int, description string)
+
+func OrdinaryCoffee() (int, string) {
+	return 5, "Ordinary Coffee"
+}
+
+func MilkyCoffee(coffee CoffeeFunc) CoffeeFunc {
+	return func() (int, string) {
+		cost, description := coffee()
+		return cost + 2, description + ", milk"
+	}
+}
+
+func SweetCoffee(coffee CoffeeFunc) CoffeeFunc {
+	return func() (int, string) {
+		cost, description := coffee()
+		return cost + 1, description + ", sugar"
+	}
 }
