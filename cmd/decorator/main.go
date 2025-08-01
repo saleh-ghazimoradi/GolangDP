@@ -28,4 +28,22 @@ func main() {
 	milkySweetCoffee := decorator.MilkyCoffee(decorator.SweetCoffee(decorator.OrdinaryCoffee))
 	cost, desc = milkySweetCoffee()
 	fmt.Printf("Order: %s, Cost: $%d\n", desc, cost)
+
+	// structural example
+	core := &decorator.CoreHandler{}
+	handler := &decorator.AuthDecorator{Handler: &decorator.LoggerDecorator{Handler: core}}
+	fmt.Println(handler)
+
+	// functional example
+	query := decorator.CoreQuery
+	result, err := query()
+	fmt.Printf("Result: %s, Error: %v\n", result, err)
+
+	timedQuery := decorator.TimingDecorator(decorator.CoreQuery)
+	result, err = timedQuery()
+	fmt.Printf("Result: %s, Error: %v\n", result, err)
+
+	retryTimedQuery := decorator.RetryDecorator(decorator.TimingDecorator(decorator.CoreQuery), 3)
+	result, err = retryTimedQuery()
+	fmt.Printf("Result: %s, Error: %v\n", result, err)
 }
