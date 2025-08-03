@@ -60,4 +60,62 @@ func main() {
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
+
+	data := []byte("Hello, this is a test string for compression!")
+	gzipStrategy, err := strategy.NewGzipCompression()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	context, err := strategy.NewCompressorContext(gzipStrategy)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	compressed, err := context.CompressData(data)
+	if err != nil {
+		fmt.Println("Error compressing with Gzip:", err)
+		return
+	}
+	fmt.Printf("Gzip compressed size: %d bytes\n", len(compressed))
+	decompressed, err := context.Decompress(compressed)
+	if err != nil {
+		fmt.Println("Error decompressing with Gzip:", err)
+		return
+	}
+	fmt.Printf("Gzip decompressed: %s\n", string(decompressed))
+
+	// Switch to Zip strategy
+	zipStrategy, err := strategy.NewZipCompression()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	context.SetCompressionStrategy(zipStrategy)
+
+	compressed, err = context.CompressData(data)
+	if err != nil {
+		fmt.Println("Error compressing with Zip:", err)
+		return
+	}
+	fmt.Printf("Zip compressed size: %d bytes\n", len(compressed))
+	decompressed, err = context.Decompress(compressed)
+	if err != nil {
+		fmt.Println("Error decompressing with Zip:", err)
+		return
+	}
+	fmt.Printf("Zip decompressed: %s\n", string(decompressed))
+
+	_, err = context.CompressData([]byte{})
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	context.SetCompressionStrategy(nil)
+	_, err = context.CompressData(data)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
 }
