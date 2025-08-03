@@ -185,3 +185,76 @@ func NewShippingContext(strategy ShippingStrategy) *ShippingContext {
 		ShippingStrategy: strategy,
 	}
 }
+
+// USE CASE NUM 3
+
+type EvictionStrategy interface {
+	Evict(c *Cache)
+}
+
+type LRU struct{}
+
+func (l *LRU) Evict(c *Cache) {
+	fmt.Println("Evicting by LRU strategy")
+}
+
+func NewLRU() *LRU {
+	return &LRU{}
+}
+
+type FIFO struct{}
+
+func (f *FIFO) Evict(c *Cache) {
+	fmt.Println("Evicting by FIFO strategy")
+}
+
+func NewFIFO() *FIFO {
+	return &FIFO{}
+}
+
+type LFU struct{}
+
+func (l *LFU) Evict(c *Cache) {
+	fmt.Println("Evicting by LFU strategy")
+}
+
+func NewLFU() *LFU {
+	return &LFU{}
+}
+
+type Cache struct {
+	Storage          map[string]string
+	EvictionStrategy EvictionStrategy
+	Capacity         int
+	MaxCapacity      int
+}
+
+func (c *Cache) SetEvictionStrategy(strategy EvictionStrategy) {
+	c.EvictionStrategy = strategy
+}
+
+func (c *Cache) Add(key, value string) {
+	if c.Capacity == c.MaxCapacity {
+		c.Evict()
+	}
+	c.Capacity++
+	c.Storage[key] = value
+}
+
+func (c *Cache) Evict() {
+	c.EvictionStrategy.Evict(c)
+	c.Capacity--
+}
+
+func (c *Cache) Get(key string) {
+	delete(c.Storage, key)
+}
+
+func NewCache(e EvictionStrategy) *Cache {
+	return &Cache{
+		Storage:          make(map[string]string),
+		EvictionStrategy: e,
+		Capacity:         0,
+		MaxCapacity:      2,
+	}
+}

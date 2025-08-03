@@ -137,4 +137,28 @@ func main() {
 	shippingContext = strategy.NewShippingContext(overnightShipping)
 	cost = shippingContext.CalculateShippingCost(weight, distance)
 	fmt.Printf("Overnight Shipping Cost: $%.2f\n", cost)
+
+	// USE CASE NUM 3
+	cache := strategy.NewCache(strategy.NewLRU())
+
+	fmt.Println("Using LRU strategy:")
+	cache.Add("key1", "value1")
+	fmt.Printf("Added key1, Capacity: %d/%d\n", cache.Capacity, cache.MaxCapacity)
+	cache.Add("key2", "value2")
+	fmt.Printf("Added key2, Capacity: %d/%d\n", cache.Capacity, cache.MaxCapacity)
+	cache.Add("key3", "value3")
+	fmt.Printf("Added key3, Capacity: %d/%d\n", cache.Capacity, cache.MaxCapacity)
+
+	cache.Get("key1")
+	fmt.Printf("After Get(key1), Capacity: %d/%d\n", cache.Capacity, cache.MaxCapacity)
+
+	cache.SetEvictionStrategy(strategy.NewFIFO())
+	fmt.Println("\nSwitched to FIFO strategy:")
+	cache.Add("key4", "value4")
+	fmt.Printf("Added key4, Capacity: %d/%d\n", cache.Capacity, cache.MaxCapacity)
+
+	cache.SetEvictionStrategy(strategy.NewLFU())
+	fmt.Println("\nSwitched to LFU strategy:")
+	cache.Add("key5", "value5")
+	fmt.Printf("Added key5, Capacity: %d/%d\n", cache.Capacity, cache.MaxCapacity)
 }
