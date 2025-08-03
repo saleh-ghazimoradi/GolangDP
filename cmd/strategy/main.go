@@ -61,6 +61,8 @@ func main() {
 		fmt.Println("Error:", err)
 	}
 
+	// USE CASE 1
+
 	data := []byte("Hello, this is a test string for compression!")
 	gzipStrategy, err := strategy.NewGzipCompression()
 	if err != nil {
@@ -118,4 +120,21 @@ func main() {
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
+	// USE CASE 2
+	weight, distance := 10.0, 100.0
+
+	standardShipping := strategy.NewStandardShipping()
+	shippingContext := strategy.NewShippingContext(standardShipping)
+	cost := shippingContext.CalculateShippingCost(weight, distance)
+	fmt.Printf("Standard Shipping Cost: $%.2f\n", cost)
+
+	expressShipping := strategy.NewExpressShipping()
+	shippingContext = strategy.NewShippingContext(expressShipping)
+	cost = shippingContext.CalculateShippingCost(weight, distance)
+	fmt.Printf("Express Shipping Cost: $%.2f\n", cost)
+
+	overnightShipping := strategy.NewOvernightShipping()
+	shippingContext = strategy.NewShippingContext(overnightShipping)
+	cost = shippingContext.CalculateShippingCost(weight, distance)
+	fmt.Printf("Overnight Shipping Cost: $%.2f\n", cost)
 }

@@ -8,6 +8,8 @@ import (
 	"io"
 )
 
+// USE CASE NUM 1
+
 type CompressionStrategy interface {
 	Compress(data []byte) ([]byte, error)
 	Decompress(data []byte) ([]byte, error)
@@ -128,4 +130,58 @@ func NewCompressorContext(strategy CompressionStrategy) (*CompressorContext, err
 	return &CompressorContext{
 		CompressionStrategy: strategy,
 	}, nil
+}
+
+// USE CASE NUM 2
+
+type ShippingStrategy interface {
+	CalculateCost(weight, distance float64) float64
+}
+
+type StandardShipping struct{}
+
+func (s *StandardShipping) CalculateCost(weight, distance float64) float64 {
+	return weight*.5 + distance*.1
+}
+
+func NewStandardShipping() *StandardShipping {
+	return &StandardShipping{}
+}
+
+type ExpressShipping struct{}
+
+func (s *ExpressShipping) CalculateCost(weight, distance float64) float64 {
+	return weight*1 + distance*.2
+}
+
+func NewExpressShipping() *ExpressShipping {
+	return &ExpressShipping{}
+}
+
+type OvernightShipping struct{}
+
+func (o *OvernightShipping) CalculateCost(weight, distance float64) float64 {
+	return weight*2 + distance*.5
+}
+
+func NewOvernightShipping() *OvernightShipping {
+	return &OvernightShipping{}
+}
+
+type ShippingContext struct {
+	ShippingStrategy ShippingStrategy
+}
+
+func (s *ShippingContext) SetShippingStrategy(strategy ShippingStrategy) {
+	s.ShippingStrategy = strategy
+}
+
+func (s *ShippingContext) CalculateShippingCost(weight, distance float64) float64 {
+	return s.ShippingStrategy.CalculateCost(weight, distance)
+}
+
+func NewShippingContext(strategy ShippingStrategy) *ShippingContext {
+	return &ShippingContext{
+		ShippingStrategy: strategy,
+	}
 }
