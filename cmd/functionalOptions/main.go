@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/saleh-ghazimoradi/GolangDP/functionalOptions"
 	"time"
 )
@@ -18,4 +19,23 @@ func main() {
 		functionalOptions.WithTLSEnabled("server.crt", "server.key"),
 	)
 	server3.Start()
+
+	fmt.Println()
+
+	client1 := functionalOptions.NewDBClient()
+	client1.Connect()
+
+	client2 := functionalOptions.NewDBClient(
+		functionalOptions.WithDBHost("db.example.com"),
+		functionalOptions.WithDBPort(3306),
+	)
+	client2.Connect()
+
+	client3 := functionalOptions.NewDBClient(
+		functionalOptions.WithDBMaxPoolSize(50),
+		functionalOptions.WithDBTimeout(10*time.Second),
+		functionalOptions.WithDBRetryAttempts(5),
+	)
+	client3.Connect()
+
 }
