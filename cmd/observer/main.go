@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/saleh-ghazimoradi/GolangDP/observer"
+	"time"
 )
 
 func main() {
@@ -27,4 +28,22 @@ func main() {
 	agency.Deregister(app2)
 	fmt.Println("\nPublishing another article...")
 	agency.Publish("Tech: New AI Breakthrough")
+	fmt.Println("-------------------------------------")
+
+	// Stock Market Price Ticker System
+	tracker := &observer.StockMarket{Observers: make(map[string]observer.StockMarketObserver)}
+	app3 := &observer.TradingApp{Id: "App1"}
+	app4 := &observer.TradingApp{Id: "App2"}
+	tracker.Register(app3)
+	tracker.Register(app4)
+
+	go func() {
+		tracker.UpdatePrice("AIOZ", 150.25)
+		time.Sleep(1 * time.Second)
+		tracker.UpdatePrice("AIOZ", 152.75)
+	}()
+
+	time.Sleep(500 * time.Millisecond)
+	tracker.Deregister("App2")
+	time.Sleep(2 * time.Second)
 }
