@@ -2,6 +2,8 @@ package functionalOptions
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"time"
 )
 
@@ -64,4 +66,50 @@ func NewDBClient(options ...OptionDb) *DBClient {
 		opts(client)
 	}
 	return client
+}
+
+// Logger implementation using functional options pattern
+
+type Logger struct {
+	Level  string
+	Output io.Writer
+	Prefix string
+}
+
+type OptionLogger func(logger *Logger)
+
+func WithLevel(level string) OptionLogger {
+	return func(logger *Logger) {
+		logger.Level = level
+	}
+}
+
+func WithOutput(output io.Writer) OptionLogger {
+	return func(logger *Logger) {
+		logger.Output = output
+	}
+}
+
+func WithPrefix(prefix string) OptionLogger {
+	return func(logger *Logger) {
+		logger.Prefix = prefix
+	}
+}
+
+func (l *Logger) Log(message string) {
+	fmt.Fprintf(l.Output, "[%s] %s%s\n", l.Level, l.Prefix, message)
+}
+
+func NewLogger(options ...OptionLogger) *Logger {
+	logger := &Logger{
+		Level:  "INFO",
+		Output: os.Stdout,
+		Prefix: "",
+	}
+
+	for _, opts := range options {
+		opts(logger)
+	}
+
+	return logger
 }

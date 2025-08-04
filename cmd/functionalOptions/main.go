@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/saleh-ghazimoradi/GolangDP/functionalOptions"
+	"os"
 	"time"
 )
 
@@ -37,5 +38,21 @@ func main() {
 		functionalOptions.WithDBRetryAttempts(5),
 	)
 	client3.Connect()
+	fmt.Println()
 
+	logger1 := functionalOptions.NewLogger()
+	logger1.Log("This is a test message")
+	logger2 := functionalOptions.NewLogger(
+		functionalOptions.WithLevel("DEBUG"),
+		functionalOptions.WithPrefix("APP1: "),
+	)
+	logger2.Log("Debugging the application")
+
+	logger3 := functionalOptions.NewLogger(
+		functionalOptions.WithLevel("ERROR"),
+		functionalOptions.WithOutput(os.Stderr),
+		functionalOptions.WithPrefix("ERROR: "),
+	)
+
+	logger3.Log("An error occurred")
 }
