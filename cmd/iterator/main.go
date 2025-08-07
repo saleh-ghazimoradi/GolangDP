@@ -41,4 +41,19 @@ func main() {
 		song := arrayIterator.Next()
 		fmt.Printf("Song: %s by %s\n", song.Name, song.Artist)
 	}
+
+	// USE CASE ONE USING LINKED LIST BASED ITERATOR
+	playlist := &iterator.PlayListLinkedList{}
+	playlist.AddSong(iterator.Song{Name: "This is the life", Artist: "Amy MacDonald"})
+	playlist.AddSong(iterator.Song{Name: "Untouchable", Artist: "Anathema"})
+	playlist.AddSong(iterator.Song{Name: "The blind lead the blind", Artist: "antimatter"})
+
+	// Use iterator to traverse songs
+	fmt.Println()
+	fmt.Println("Linked List-Based Playlist:")
+	iterate := playlist.CreateIterator()
+	for iterate.HasNext() {
+		song := iterate.Next()
+		fmt.Printf("Song: %s by %s\n", song.Name, song.Artist)
+	}
 }
