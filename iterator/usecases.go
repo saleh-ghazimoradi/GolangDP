@@ -1,5 +1,7 @@
 package iterator
 
+// 1. Array based iterator
+
 // Song represents an item in the playlist
 type Song struct {
 	Name   string
@@ -52,5 +54,49 @@ func NewPlayListIterator(playlists *PlayList) SongIterator {
 	return &playListIterator{
 		Songs: playlists.Songs,
 		index: 0,
+	}
+}
+
+// 2. Linked list based iterator
+
+type SongNode struct {
+	Song *Song
+	Next *SongNode
+}
+
+type PlayListLinkedList struct {
+	Head *SongNode
+}
+
+type playListLinkedListIterator struct {
+	current *SongNode
+}
+
+func (i *playListLinkedListIterator) HasNext() bool {
+	return i.current != nil
+}
+
+func (i *playListLinkedListIterator) Next() *Song {
+	if !i.HasNext() {
+		return nil
+	}
+	song := i.current.Song
+	i.current = i.current.Next
+	return song
+}
+
+func (p *PlayListLinkedList) AddSong(song Song) {
+	newNode := &SongNode{Song: &song}
+	newNode.Next = p.Head
+	p.Head = newNode
+}
+
+func (p *PlayListLinkedList) CreateIterator() SongIterator {
+	return NewPlayListLinkedListIterator(p)
+}
+
+func NewPlayListLinkedListIterator(playlist *PlayListLinkedList) SongIterator {
+	return &playListLinkedListIterator{
+		current: playlist.Head,
 	}
 }
