@@ -27,4 +27,18 @@ func main() {
 		book := iter.Next()
 		fmt.Printf("Book: %s by %s\n", book.Title, book.Author)
 	}
+
+	// USE CASE ONE USING ARRAY BASED ITERATOR
+	fmt.Println()
+	arrayPlaylist := &iterator.PlayList{}
+	arrayPlaylist.AddSong(iterator.Song{Name: "This is the life", Artist: "Amy MacDonald"})
+	arrayPlaylist.AddSong(iterator.Song{Name: "Untouchable", Artist: "Anathema"})
+	arrayPlaylist.AddSong(iterator.Song{Name: "The blind lead the blind", Artist: "Antimatter"})
+
+	fmt.Println("Array-Based Playlist:")
+	arrayIterator := arrayPlaylist.CreateIterator()
+	for arrayIterator.HasNext() {
+		song := arrayIterator.Next()
+		fmt.Printf("Song: %s by %s\n", song.Name, song.Artist)
+	}
 }
