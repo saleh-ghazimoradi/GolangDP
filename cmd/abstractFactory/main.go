@@ -15,4 +15,14 @@ func main() {
 	macOsFactory := abstractFactory.MacOsFactory{}
 	fmt.Println("MacOS:")
 	abstractFactory.CreateUI(&macOsFactory)
+
+	fmt.Println()
+	mysqlFactory := abstractFactory.MySQLFactory{}
+	fmt.Println("MySQL:")
+	abstractFactory.UseDatabase(&mysqlFactory)
+	fmt.Println()
+
+	postgresFactory := abstractFactory.PostgreSQLFactory{}
+	fmt.Println("PostgreSQL:")
+	abstractFactory.UseDatabase(&postgresFactory)
 }
